@@ -2,24 +2,19 @@ class ToDoList {
     constructor(selector) {
         this.container = document.querySelector(selector) || document.body;
         this.tasks = JSON.parse(localStorage.getItem('to-do-list')) || [{
-            text: 'Śmieci',
+            text: 'Zadanie do wykonania',
             isCompleted: false,
-        },
-        {
-            text: 'Obiad',
-            isCompleted: true,
-        }
-        ];
+        }];
         this.render();
     }
-    saveTasks(taskIndex){
-        localStorage.setItem('to-do-list',JSON.stringify(this.tasks))
+    saveTasks() {
+        localStorage.setItem('to-do-list', JSON.stringify(this.tasks))
     }
     render() {
         this.container.innerHTML = "";
         this.renderForm();
         this.tasks.forEach(
-            (task,index) => this.renderTask(task,index)
+            (task, index) => this.renderTask(task, index)
         )
     }
     toggleTask(taskIndex) {
@@ -32,25 +27,32 @@ class ToDoList {
                 :
                 task
         )
-        this.render();
         this.saveTasks();
+        this.render();
     }
-    // removeTask(task){
-    //     task.isCompleted = true;
-    //     this.render();
-    // }
-    renderTask(task,index) {
+    removeTask(taskIndex) {
+        this.tasks.splice(taskIndex, 1);
+        this.saveTasks();
+        this.render();
+    }
+    renderTask(task, index) {
         const div = document.createElement('div');
+        const span = document.createElement('span');
         const button = document.createElement('button');
-        div.innerText = task.text;
-        button.innerText = "zmień"
+        span.innerText = task.text;
+        button.innerText = "usuń"
         if (task.isCompleted) {
             div.style.textDecoration = 'line-through'
         }
-        button.addEventListener(
+        span.addEventListener(
             'click',
             () => this.toggleTask(index)
-        )
+        );
+        button.addEventListener(
+            'click',
+            () => this.removeTask(index)
+        );
+        div.appendChild(span);
         div.appendChild(button);
         this.container.appendChild(div);
     }
@@ -77,7 +79,7 @@ class ToDoList {
             isCompleted: false,
         }
         this.tasks.push(newTask);
-        this.render();
         this.saveTasks();
+        this.render();
     }
 }
