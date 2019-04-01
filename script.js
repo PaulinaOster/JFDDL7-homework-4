@@ -5,6 +5,10 @@ class ToDoList {
             text: 'Zadanie do wykonania',
             isCompleted: false,
         }];
+        this.filteredTasks = this.tasks;
+        this.stringQuery = null;
+        this.statusQuery = 'all';
+
         this.render();
     }
     saveTasks() {
@@ -13,8 +17,15 @@ class ToDoList {
     render() {
         this.container.innerHTML = "";
         this.renderForm();
+        this.renderQueryForm();
+        this.filterTasks();
+        console.log(this.tasks, this.filteredTasks);
         this.tasks.forEach(
-            (task, index) => this.renderTask(task, index)
+            (task, index) => {
+                for (let i = 0; i < this.filteredTasks.length; i++) {
+                    if (task.text === this.filteredTasks[i].text) this.renderTask(task, index)
+                }
+            }
         )
     }
     toggleTask(taskIndex) {
@@ -34,6 +45,20 @@ class ToDoList {
         this.tasks.splice(taskIndex, 1);
         this.saveTasks();
         this.render();
+    }
+    filterTasks() {
+        if (this.stringQuery) {
+            this.filteredTasks = this.tasks.filter(
+                task => task.text.includes(this.stringQuery)
+            )
+        } else {
+            this.filteredTasks = this.tasks.filter(
+                task => {
+                    this.statusQuery === 'all' ? (task.isCompleted === this.statusQuery) || (task.isCompleted !== this.statusQuery)
+                        : (task.isCompleted === this.statusQuery);
+                }
+            );
+        }
     }
     renderTask(task, index) {
         const div = document.createElement('div');
@@ -66,11 +91,64 @@ class ToDoList {
 
         button.addEventListener(
             'click',
-            () => this.addTask(input.value)
+            () => {
+                if (input.value) this.addTask(input.value);
+            }
         )
 
         div.appendChild(input);
         div.appendChild(button);
+        this.container.appendChild(div);
+    }
+    renderQueryForm() {
+        const div = document.createElement('div');
+        const input = document.createElement('input');
+        const button1 = document.createElement('button');
+        const button2 = document.createElement('button');
+        const button3 = document.createElement('button');
+        const button4 = document.createElement('button');
+
+        button1.innerText = 'wyszukaj wg słowa kluczowego';
+        button2.innerText = 'wyświetl wszystkie';
+        button3.innerText = 'wyświetl zakończone';
+        button4.innerText = 'wyświetl nieukończone';
+        input.setAttribute('placeholder', 'słowo kluczowe');
+        if (this.stringQuery) input.value = this.stringQuery;
+
+        button1.addEventListener(
+            'click',
+            () => {
+                if (input.value) this.stringQuery = input.value;
+                this.render();
+            }
+        )
+        button2.addEventListener(
+            'click',
+            () => {
+                if (input.value) this.statusQuery = 'all';
+                this.render();
+            }
+        )
+        button3.addEventListener(
+            'click',
+            () => {
+                if (input.value) this.statusQuery = true;
+                this.render();
+            }
+        )
+        button4.addEventListener(
+            'click',
+            () => {
+                if (input.value) this.statusQuery = false;
+                this.render();
+            }
+        )
+
+        div.appendChild(input);
+        div.appendChild(button1);
+        div.appendChild(button2);
+        div.appendChild(button3);
+        div.appendChild(button4);
         this.container.appendChild(div);
     }
     addTask(newTaskText) {
