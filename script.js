@@ -48,8 +48,13 @@ class ToDoList {
     filterTasks() {
         if (this.stringQuery) {
             this.filteredTasks = this.tasks.filter(
-                task => task.text.toLowerCase().includes(this.stringQuery)
-            )
+                task => task.text.replace(/ /gi,'').includes(this.stringQuery)
+            ).filter(
+                task => {
+                    return (this.statusQuery === 'all' ? (task.isCompleted === this.statusQuery) || (task.isCompleted !== this.statusQuery)
+                        : (task.isCompleted === this.statusQuery));
+                }
+            );
         } else {
             this.filteredTasks = this.tasks.filter(
                 task => {
@@ -119,13 +124,11 @@ class ToDoList {
             () => {
                 this.examineInputValue(input.value);
                 this.render();
-                this.stringQuery = null;
             }
         )
         button2.addEventListener(
             'click',
             () => {
-                this.stringQuery = null;
                 this.statusQuery = 'all';
                 this.render();
             }
@@ -133,7 +136,6 @@ class ToDoList {
         button3.addEventListener(
             'click',
             () => {
-                this.stringQuery = null;
                 this.statusQuery = true;
                 this.render();
             }
@@ -141,7 +143,6 @@ class ToDoList {
         button4.addEventListener(
             'click',
             () => {
-                this.stringQuery = null;
                 this.statusQuery = false;
                 this.render();
             }
@@ -156,8 +157,8 @@ class ToDoList {
     }
     examineInputValue(inputValue) {
         if (inputValue.length > 0) {
-            this.stringQuery = inputValue.replace(' ','').toLowerCase();
-        }
+            this.stringQuery = inputValue.replace(/ /gi,'');
+        } else this.stringQuery = null;
     }
     addTask(newTaskText) {
         const newTask = {
