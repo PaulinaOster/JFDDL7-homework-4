@@ -19,7 +19,6 @@ class ToDoList {
         this.renderForm();
         this.renderQueryForm();
         this.filterTasks();
-        console.log(this.tasks, this.filteredTasks);
         this.tasks.forEach(
             (task, index) => {
                 for (let i = 0; i < this.filteredTasks.length; i++) {
@@ -49,7 +48,7 @@ class ToDoList {
     filterTasks() {
         if (this.stringQuery) {
             this.filteredTasks = this.tasks.filter(
-                task => task.text.includes(this.stringQuery)
+                task => task.text.toLowerCase().includes(this.stringQuery)
             )
         } else {
             this.filteredTasks = this.tasks.filter(
@@ -118,7 +117,7 @@ class ToDoList {
         button1.addEventListener(
             'click',
             () => {
-                examineInputValue(input.value);
+                this.examineInputValue(input.value);
                 this.render();
                 this.stringQuery = null;
             }
@@ -155,8 +154,10 @@ class ToDoList {
         div.appendChild(button4);
         this.container.appendChild(div);
     }
-    examineInputValue (inputValue) {
-        if (inputValue) this.stringQuery = input.value;
+    examineInputValue(inputValue) {
+        if (inputValue.length > 0) {
+            this.stringQuery = inputValue.replace(' ','').toLowerCase();
+        }
     }
     addTask(newTaskText) {
         const newTask = {
