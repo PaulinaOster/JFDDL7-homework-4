@@ -48,7 +48,7 @@ class ToDoList {
     filterTasks() {
         if (this.stringQuery) {
             this.filteredTasks = this.tasks.filter(
-                task => task.text.replace(/ /gi,'').includes(this.stringQuery)
+                task => task.text.replace(/ /gi, '').includes(this.stringQuery)
             ).filter(
                 task => {
                     return (this.statusQuery === 'all' ? (task.isCompleted === this.statusQuery) || (task.isCompleted !== this.statusQuery)
@@ -148,6 +148,10 @@ class ToDoList {
             }
         )
 
+        this.statusQuery === 'all' ? button2.style.backgroundColor = 'darkgrey' :
+            (this.statusQuery === true ? button3.style.backgroundColor = 'darkgrey' :
+                this.statusQuery === false ? button4.style.backgroundColor = 'darkgrey' : null)
+
         div.appendChild(input);
         div.appendChild(button1);
         div.appendChild(button2);
@@ -157,7 +161,7 @@ class ToDoList {
     }
     examineInputValue(inputValue) {
         if (inputValue.length > 0) {
-            this.stringQuery = inputValue.replace(/ /gi,'');
+            this.stringQuery = inputValue.replace(/ /gi, '');
         } else this.stringQuery = null;
     }
     addTask(newTaskText) {
