@@ -5,7 +5,7 @@ class ToDoList {
             text: 'Zadanie do wykonania',
             isCompleted: false,
         }];
-        this.filteredTasks = this.tasks;
+        this.filteredTasks = null;
         this.stringQuery = null;
         this.statusQuery = 'all';
 
@@ -54,8 +54,8 @@ class ToDoList {
         } else {
             this.filteredTasks = this.tasks.filter(
                 task => {
-                    this.statusQuery === 'all' ? (task.isCompleted === this.statusQuery) || (task.isCompleted !== this.statusQuery)
-                        : (task.isCompleted === this.statusQuery);
+                    return (this.statusQuery === 'all' ? (task.isCompleted === this.statusQuery) || (task.isCompleted !== this.statusQuery)
+                        : (task.isCompleted === this.statusQuery));
                 }
             );
         }
@@ -118,28 +118,32 @@ class ToDoList {
         button1.addEventListener(
             'click',
             () => {
-                if (input.value) this.stringQuery = input.value;
+                examineInputValue(input.value);
                 this.render();
+                this.stringQuery = null;
             }
         )
         button2.addEventListener(
             'click',
             () => {
-                if (input.value) this.statusQuery = 'all';
+                this.stringQuery = null;
+                this.statusQuery = 'all';
                 this.render();
             }
         )
         button3.addEventListener(
             'click',
             () => {
-                if (input.value) this.statusQuery = true;
+                this.stringQuery = null;
+                this.statusQuery = true;
                 this.render();
             }
         )
         button4.addEventListener(
             'click',
             () => {
-                if (input.value) this.statusQuery = false;
+                this.stringQuery = null;
+                this.statusQuery = false;
                 this.render();
             }
         )
@@ -150,6 +154,9 @@ class ToDoList {
         div.appendChild(button3);
         div.appendChild(button4);
         this.container.appendChild(div);
+    }
+    examineInputValue (inputValue) {
+        if (inputValue) this.stringQuery = input.value;
     }
     addTask(newTaskText) {
         const newTask = {
